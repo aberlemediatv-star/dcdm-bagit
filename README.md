@@ -4,6 +4,8 @@ CLI-Tool für **Bundesarchiv DCDM + BagIt**:
 - Bildsequenz + WAV-Tonspuren + Untertitel-Input als **BagIt-Paket** bauen
 - Optional: ProRes → (TIFF 16-bit Sequenz + WAV PCM 24-bit/48kHz + SRT→SMPTE-XML best-effort) und dann BagIt bauen
 
+Repository: https://github.com/aberlemediatv-star/dcdm-bagit
+
 ## Voraussetzungen
 
 - Python >= 3.10
