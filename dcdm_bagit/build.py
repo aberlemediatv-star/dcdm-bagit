@@ -104,7 +104,8 @@ def build_dcdm_bagit(
             validate_wav_tracks(tracks=copied_tracks)
 
     # Subtitles: always copy original SRT if provided; additionally generate SMPTE XML.
-    srt_dst = layout.srt_subtitle_path(data_dir, layout.srt_subtitle_filename)
+    # SRT lives alongside the SMPTE XML in the subtitles/ directory.
+    srt_dst = layout.subtitles_path(data_dir, layout.srt_subtitle_filename)
     if srt_path:
         if not srt_path.exists():
             raise FileNotFoundError(srt_path)

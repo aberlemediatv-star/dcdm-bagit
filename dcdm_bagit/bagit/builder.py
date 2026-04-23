@@ -4,7 +4,7 @@ import datetime as _dt
 from dataclasses import dataclass
 from pathlib import Path
 
-from .manifest import iter_manifest_paths, read_manifest_sha256, sha256_file, write_sha256_manifest
+from .manifest import iter_manifest_paths, write_sha256_manifest
 
 
 @dataclass(frozen=True)

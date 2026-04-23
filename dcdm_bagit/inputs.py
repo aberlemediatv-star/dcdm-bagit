@@ -189,12 +189,11 @@ def validate_wav_tracks(*, tracks: Iterable[AudioTrack], expected_sample_rate: i
                 f"Audio sample rate mismatch for {t.dst_path.name}: expected {expected_sample_rate}, got {sample_rate}"
             )
 
-        # ffprobe sample_fmt for PCM 24-bit often appears as s32p/s24le depending on decoder;
-        # we accept common 24-bit indicators.
-        if "24" not in sample_fmt and "s24" not in sample_fmt and "s32" in sample_fmt:
-            # Some decoders report s32 even for 24-bit packed PCM. Best-effort: allow s32*.
-            pass
-        elif "24" not in sample_fmt and "s24" not in sample_fmt:
+        # ffprobe sample_fmt for PCM 24-bit often appears as s32p/s24le depending on decoder.
+        # We accept any sample_fmt containing "24" as well as s32* (packed-24 best-effort).
+        is_24bit = "24" in sample_fmt
+        is_s32_packed = sample_fmt.startswith("s32")
+        if not (is_24bit or is_s32_packed):
             raise ValueError(
                 f"Audio bit depth not 24-bit for {t.dst_path.name} (ffprobe sample_fmt={sample_fmt}). "
                 f"Run with --audio-normalize to generate PCM 24-bit / {expected_sample_rate}Hz."

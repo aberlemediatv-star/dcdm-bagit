@@ -25,9 +25,10 @@ def _add_common_build_args(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--subtitle-timecode-rebase",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
         default=True,
-        help="Rebase subtitle timecodes onto the provided/derived video FPS.",
+        help="Rebase subtitle timecodes onto the provided/derived video FPS "
+             "(use --no-subtitle-timecode-rebase to disable).",
     )
 
 
@@ -71,8 +72,6 @@ def main(argv: list[str] | None = None) -> int:
     verify_parser(subparsers)
 
     args = parser.parse_args(argv)
-    out_dir = Path(getattr(args, "output", "")).expanduser() if hasattr(args, "output") else None
-    bag_dir = Path(args.bag).expanduser() if hasattr(args, "bag") else None
 
     if args.cmd == "build":
         from dcdm_bagit.build import build_dcdm_bagit

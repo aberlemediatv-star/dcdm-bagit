@@ -141,8 +141,12 @@ def transcode_prores_to_dcdm_components(
         raise ValueError("No audio streams detected in ProRes input.")
 
     # Map to sequential track numbering 1..N for stable output.
+    # NOTE: ffmpeg's `0:a:N` selector is *audio-relative* (N-th audio stream),
+    # not the global stream index reported by ffprobe. We therefore enumerate
+    # `audio_stream_infos` to obtain the correct audio-relative index.
     track_counter = 0
-    for stream_index, channels in audio_stream_infos:
+    for audio_idx, (_global_stream_index, channels) in enumerate(audio_stream_infos):
+        map_spec = f"0:a:{audio_idx}"
         if audio_split and channels and channels > 1:
             # Best-effort: split multichannel stream into mono using pan.
             for ch in range(channels):
@@ -158,7 +162,7 @@ def transcode_prores_to_dcdm_components(
                     str(prores_path),
                     "-vn",
                     "-map",
-                    f"0:a:{stream_index}",
+                    map_spec,
                     "-af",
                     f"pan=mono|c0=c{ch}",
                     "-ac",
@@ -185,7 +189,7 @@ def transcode_prores_to_dcdm_components(
                 str(prores_path),
                 "-vn",
                 "-map",
-                f"0:a:{stream_index}",
+                map_spec,
                 "-c:a",
                 "pcm_s24le",
                 "-ar",
